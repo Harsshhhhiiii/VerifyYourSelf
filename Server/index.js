@@ -17,11 +17,16 @@ app.use(cookieParser());
 app.use('/auth',router);
 const port=process.env.PORT || 8000;
 
-mongoose.connect(process.env.MONGO_URL)
+const mongoURI = process.env.MONGO_URL;
+if (!mongoURI) {
+  console.error("❌ Error: MONGO_URI is not defined in .env file");
+  process.exit(1);
+}
 
+mongoose.connect(mongoURI)
+  .then(() => console.log("✅ Connected to MongoDB"))
+  .catch(err => console.error("❌ Error connecting to DB:", err));
 
-.then(() => console.log("Connected to DB"))
-.catch((error) => console.error("Error connecting to DB:", error));
 
 app.listen( port , () => {
     console.log("Server is running ")   
